@@ -22,13 +22,16 @@
 #endif
 #endif
 
-
+#ifndef newCONSTSUB
 static void
 newCONSTSUB(stash,name,sv)
     HV *stash;
     char *name;
     SV *sv;
 {
+#ifdef dTHR
+    dTHR;
+#endif
     U32 oldhints = hints;
     HV *old_cop_stash = curcop->cop_stash;
     HV *old_curstash = curstash;
@@ -51,8 +54,11 @@ newCONSTSUB(stash,name,sv)
     curstash = old_curstash;
     curcop->cop_line = oldline;
 }
+#endif
 
 MODULE=IPC::SysV	PACKAGE=IPC::Msg::stat
+
+PROTOTYPES: ENABLE
 
 void
 pack(obj)
@@ -195,14 +201,23 @@ BOOT:
 #ifdef GETALL
         newCONSTSUB(stash,"GETALL", newSViv(GETALL));
 #endif
-#ifdef IPC_STAT
-        newCONSTSUB(stash,"IPC_STAT", newSViv(IPC_STAT));
+#ifdef IPC_ALLOC
+        newCONSTSUB(stash,"IPC_ALLOC", newSViv(IPC_ALLOC));
 #endif
-#ifdef IPC_SET
-        newCONSTSUB(stash,"IPC_SET", newSViv(IPC_SET));
+#ifdef IPC_CREAT
+        newCONSTSUB(stash,"IPC_CREAT", newSViv(IPC_CREAT));
 #endif
-#ifdef IPC_RMID
-        newCONSTSUB(stash,"IPC_RMID", newSViv(IPC_RMID));
+#ifdef IPC_EXCL
+        newCONSTSUB(stash,"IPC_EXCL", newSViv(IPC_EXCL));
+#endif
+#ifdef IPC_LOCKED
+        newCONSTSUB(stash,"IPC_LOCKED", newSViv(IPC_LOCKED));
+#endif
+#ifdef IPC_M
+        newCONSTSUB(stash,"IPC_M", newSViv(IPC_M));
+#endif
+#ifdef IPC_NOERROR
+        newCONSTSUB(stash,"IPC_NOERROR", newSViv(IPC_NOERROR));
 #endif
 #ifdef IPC_NOWAIT
         newCONSTSUB(stash,"IPC_NOWAIT", newSViv(IPC_NOWAIT));
@@ -210,29 +225,74 @@ BOOT:
 #ifdef IPC_PRIVATE
         newCONSTSUB(stash,"IPC_PRIVATE", newSViv(IPC_PRIVATE));
 #endif
-#ifdef IPC_CREAT
-        newCONSTSUB(stash,"IPC_CREAT", newSViv(IPC_CREAT));
+#ifdef IPC_R
+        newCONSTSUB(stash,"IPC_R", newSViv(IPC_R));
 #endif
-#ifdef IPC_ALLOC
-        newCONSTSUB(stash,"IPC_ALLOC", newSViv(IPC_ALLOC));
+#ifdef IPC_RMID
+        newCONSTSUB(stash,"IPC_RMID", newSViv(IPC_RMID));
 #endif
-#ifdef IPC_EXCL
-        newCONSTSUB(stash,"IPC_EXCL", newSViv(IPC_EXCL));
+#ifdef IPC_SET
+        newCONSTSUB(stash,"IPC_SET", newSViv(IPC_SET));
+#endif
+#ifdef IPC_STAT
+        newCONSTSUB(stash,"IPC_STAT", newSViv(IPC_STAT));
+#endif
+#ifdef IPC_W
+        newCONSTSUB(stash,"IPC_W", newSViv(IPC_W));
+#endif
+#ifdef IPC_WANTED
+        newCONSTSUB(stash,"IPC_WANTED", newSViv(IPC_WANTED));
 #endif
 #ifdef MSG_NOERROR
         newCONSTSUB(stash,"MSG_NOERROR", newSViv(MSG_NOERROR));
 #endif
+#ifdef MSG_FWAIT
+        newCONSTSUB(stash,"MSG_FWAIT", newSViv(MSG_FWAIT));
+#endif
+#ifdef MSG_LOCKED
+        newCONSTSUB(stash,"MSG_LOCKED", newSViv(MSG_LOCKED));
+#endif
+#ifdef MSG_MWAIT
+        newCONSTSUB(stash,"MSG_MWAIT", newSViv(MSG_MWAIT));
+#endif
+#ifdef MSG_WAIT
+        newCONSTSUB(stash,"MSG_WAIT", newSViv(MSG_WAIT));
+#endif
 #ifdef MSG_R
         newCONSTSUB(stash,"MSG_R", newSViv(MSG_R));
-#endif
-#ifdef MSG_W
-        newCONSTSUB(stash,"MSG_W", newSViv(MSG_W));
 #endif
 #ifdef MSG_RWAIT
         newCONSTSUB(stash,"MSG_RWAIT", newSViv(MSG_RWAIT));
 #endif
+#ifdef MSG_STAT
+        newCONSTSUB(stash,"MSG_STAT", newSViv(MSG_STAT));
+#endif
+#ifdef MSG_W
+        newCONSTSUB(stash,"MSG_W", newSViv(MSG_W));
+#endif
 #ifdef MSG_WWAIT
         newCONSTSUB(stash,"MSG_WWAIT", newSViv(MSG_WWAIT));
+#endif
+#ifdef SEM_A
+        newCONSTSUB(stash,"SEM_A", newSViv(SEM_A));
+#endif
+#ifdef SEM_ALLOC
+        newCONSTSUB(stash,"SEM_ALLOC", newSViv(SEM_ALLOC));
+#endif
+#ifdef SEM_DEST
+        newCONSTSUB(stash,"SEM_DEST", newSViv(SEM_DEST));
+#endif
+#ifdef SEM_ERR
+        newCONSTSUB(stash,"SEM_ERR", newSViv(SEM_ERR));
+#endif
+#ifdef SEM_R
+        newCONSTSUB(stash,"SEM_R", newSViv(SEM_R));
+#endif
+#ifdef SEM_ORDER
+        newCONSTSUB(stash,"SEM_ORDER", newSViv(SEM_ORDER));
+#endif
+#ifdef SEM_UNDO
+        newCONSTSUB(stash,"SEM_UNDO", newSViv(SEM_UNDO));
 #endif
 #ifdef SETVAL
         newCONSTSUB(stash,"SETVAL", newSViv(SETVAL));
@@ -240,23 +300,59 @@ BOOT:
 #ifdef SETALL
         newCONSTSUB(stash,"SETALL", newSViv(SETALL));
 #endif
-#ifdef SEM_UNDO
-        newCONSTSUB(stash,"SEM_UNDO", newSViv(SEM_UNDO));
+#ifdef SHMLBA
+        newCONSTSUB(stash,"SHMLBA", newSViv(SHMLBA));
 #endif
-#ifdef SHM_RDONLY
-        newCONSTSUB(stash,"SHM_RDONLY", newSViv(SHM_RDONLY));
+#ifdef SHM_CLEAR
+        newCONSTSUB(stash,"SHM_CLEAR", newSViv(SHM_CLEAR));
 #endif
-#ifdef SHM_RND
-        newCONSTSUB(stash,"SHM_RND", newSViv(SHM_RND));
+#ifdef SHM_COPY
+        newCONSTSUB(stash,"SHM_COPY", newSViv(SHM_COPY));
+#endif
+#ifdef SHM_DEST
+        newCONSTSUB(stash,"SHM_DEST", newSViv(SHM_DEST));
+#endif
+#ifdef SHM_FMAP
+        newCONSTSUB(stash,"SHM_FMAP", newSViv(SHM_FMAP));
+#endif
+#ifdef SHM_INIT
+        newCONSTSUB(stash,"SHM_INIT", newSViv(SHM_INIT));
 #endif
 #ifdef SHM_LOCK
         newCONSTSUB(stash,"SHM_LOCK", newSViv(SHM_LOCK));
 #endif
+#ifdef SHM_LOCKED
+        newCONSTSUB(stash,"SHM_LOCKED", newSViv(SHM_LOCKED));
+#endif
+#ifdef SHM_MAP
+        newCONSTSUB(stash,"SHM_MAP", newSViv(SHM_MAP));
+#endif
+#ifdef SHM_NOSWAP
+        newCONSTSUB(stash,"SHM_NOSWAP", newSViv(SHM_NOSWAP));
+#endif
+#ifdef SHM_RDONLY
+        newCONSTSUB(stash,"SHM_RDONLY", newSViv(SHM_RDONLY));
+#endif
+#ifdef SHM_REMOVED
+        newCONSTSUB(stash,"SHM_REMOVED", newSViv(SHM_REMOVED));
+#endif
+#ifdef SHM_RND
+        newCONSTSUB(stash,"SHM_RND", newSViv(SHM_RND));
+#endif
+#ifdef SHM_SHARE_MMU
+        newCONSTSUB(stash,"SHM_SHARE_MMU", newSViv(SHM_SHARE_MMU));
+#endif
+#ifdef SHM_SHATTR
+        newCONSTSUB(stash,"SHM_SHATTR", newSViv(SHM_SHATTR));
+#endif
+#ifdef SHM_SIZE
+        newCONSTSUB(stash,"SHM_SIZE", newSViv(SHM_SIZE));
+#endif
 #ifdef SHM_UNLOCK
         newCONSTSUB(stash,"SHM_UNLOCK", newSViv(SHM_UNLOCK));
 #endif
-#ifdef SHMLBA
-        newCONSTSUB(stash,"SHMLBA", newSViv(SHMLBA));
+#ifdef SHM_W
+        newCONSTSUB(stash,"SHM_W", newSViv(SHM_W));
 #endif
 #ifdef S_IRUSR
         newCONSTSUB(stash,"S_IRUSR", newSViv(S_IRUSR));
@@ -285,10 +381,16 @@ BOOT:
 #ifdef S_IRWXO
         newCONSTSUB(stash,"S_IRWXO", newSViv(S_IRWXO));
 #endif
-#ifdef SEM_A
-        newCONSTSUB(stash,"SEM_A", newSViv(SEM_A));
-#endif
-#ifdef SEM_R
-        newCONSTSUB(stash,"SEM_R", newSViv(SEM_R));
-#endif
 }
+
+int
+ftok(path, id)
+        char *          path
+        int             id
+    CODE:
+#if defined(HAS_SEM) || defined(HAS_SHM)
+        key_t k = ftok(path, id);
+        ST(0) = k == (key_t) -1 ? &sv_undef : sv_2mortal(newSViv(k));
+#else
+        DIE(no_func, "ftok");
+#endif

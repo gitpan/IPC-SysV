@@ -1,0 +1,9 @@
+Change 135 on 1998/05/18 by <gbarr@pobox.com> (Graham Barr)
+
+	applied changes from Jarkko Hietaniemi <jhi@iki.fi> to add
+	new constants and ftok
+	
+	fixed to compile with >5.004_50
+	
+	surrounded newCONSTSUB with #ifndef as perl now defines this itself
+
