@@ -1,3 +1,41 @@
+################################################################################
+#
+#  $Revision: 9 $
+#  $Author: mhx $
+#  $Date: 2007/10/13 05:14:11 +0200 $
+#
+################################################################################
+#
+#  Version 2.x, Copyright (C) 2007, Marcus Holland-Moritz <mhx@cpan.org>.
+#  Version 1.x, Copyright (C) 1999, Graham Barr <gbarr@pobox.com>.
+#
+#  This program is free software; you can redistribute it and/or
+#  modify it under the same terms as Perl itself.
+#
+################################################################################
+
+BEGIN {
+  if ($ENV{'PERL_CORE'}) {
+    chdir 't' if -d 't';
+    @INC = '../lib' if -d '../lib' && -d '../ext';
+  }
+
+  require Test::More; import Test::More;
+  require Config; import Config;
+
+  if ($ENV{'PERL_CORE'} && $Config{'extensions'} !~ m[\bIPC/SysV\b]) {
+    plan(skip_all => 'IPC::SysV was not built');
+  }
+}
+
+if ($Config{'d_sem'} ne 'define') {
+  plan(skip_all => '$Config{d_sem} undefined');
+}
+elsif ($Config{'d_msg'} ne 'define') {
+  plan(skip_all => '$Config{d_msg} undefined');
+}
+
+plan(tests => 11);
 
 use IPC::SysV qw(
 	SETALL
@@ -12,40 +50,42 @@ use IPC::SysV qw(
 );
 use IPC::Semaphore;
 
-print "1..10\n";
+my $sem = IPC::Semaphore->new(IPC_PRIVATE, 10, S_IRWXU | S_IRWXG | S_IRWXO | IPC_CREAT);
 
-$sem = new IPC::Semaphore(IPC_PRIVATE, 10, S_IRWXU | S_IRWXG | S_IRWXO | IPC_CREAT)
-	|| die "semget: ",$!+0," $!\n";
+unless (defined $sem) {
+  my $err = $!;
+  my $info = "IPC::Semaphore->new failed: $err";
+  if ($err == &IPC::SysV::ENOSPC) {
+    plan(skip_all => $info);
+  }
+  else {
+    die $info;
+  }
+}
 
-print "ok 1\n";
+pass('acquired a semaphore');
 
-my $st = $sem->stat || print "not ";
-print "ok 2\n";
+ok(my $st = $sem->stat,'stat it');
 
-$sem->setall( (0) x 10) || print "not ";
-print "ok 3\n";
+ok($sem->setall( (0) x 10),'set all');
 
 my @sem = $sem->getall;
-print "not " unless join("",@sem) eq "0000000000";
-print "ok 4\n";
+cmp_ok(join("",@sem),'eq',"0000000000",'get all');
 
 $sem[2] = 1;
-$sem->setall( @sem ) || print "not ";
-print "ok 5\n";
+ok($sem->setall( @sem ),'set after change');
 
 @sem = $sem->getall;
-print "not " unless join("",@sem) eq "0010000000";
-print "ok 6\n";
+cmp_ok(join("",@sem),'eq',"0010000000",'get again');
 
 my $ncnt = $sem->getncnt(0);
-print "not " if $sem->getncnt(0) || !defined($ncnt);
-print "ok 7\n";
+ok(!$sem->getncnt(0),'procs waiting now');
+ok(defined($ncnt),'prev procs waiting');
 
-$sem->op(2,-1,IPC_NOWAIT) || print "not ";
-print "ok 8\n";
+ok($sem->op(2,-1,IPC_NOWAIT),'op nowait');
 
-print "not " if $sem->getncnt(0);
-print "ok 9\n";
+ok(!$sem->getncnt(0),'no procs waiting');
 
-$sem->remove || print "not ";
-print "ok 10\n";
+END {
+  ok($sem->remove,'release') if defined $sem;
+}

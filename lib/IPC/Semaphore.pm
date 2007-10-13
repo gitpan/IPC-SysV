@@ -1,8 +1,18 @@
-# IPC::Semaphore
+################################################################################
 #
-# Copyright (c) 1997 Graham Barr <gbarr@pobox.com>. All rights reserved.
-# This program is free software; you can redistribute it and/or
-# modify it under the same terms as Perl itself.
+#  $Revision: 16 $
+#  $Author: mhx $
+#  $Date: 2007/10/08 22:12:10 +0200 $
+#
+################################################################################
+#
+#  Version 2.x, Copyright (C) 2007, Marcus Holland-Moritz <mhx@cpan.org>.
+#  Version 1.x, Copyright (C) 1997, Graham Barr <gbarr@pobox.com>.
+#
+#  This program is free software; you can redistribute it and/or
+#  modify it under the same terms as Perl itself.
+#
+################################################################################
 
 package IPC::Semaphore;
 
@@ -12,7 +22,11 @@ use strict;
 use vars qw($VERSION);
 use Carp;
 
-$VERSION = "1.00";
+$VERSION = do { my @r = '$Snapshot: /IPC-SysV/1.99_01 $' =~ /(\d+\.\d+(?:_\d+)?)/; @r ? $r[0] : '9.99' };
+$VERSION = eval $VERSION;
+
+# Figure out if we have support for native sized types
+my $N = do { my $foo = eval { pack "L!", 0 }; $@ ? '' : '!' };
 
 {
     package IPC::Semaphore::stat;
@@ -88,7 +102,7 @@ sub op {
     @_ >= 4 || croak '$sem->op( OPLIST )';
     my $self = shift;
     croak 'Bad arg count' if @_ % 3;
-    my $data = pack("s*",@_);
+    my $data = pack("s$N*",@_);
     semop($$self,$data);
 }
 
@@ -110,7 +124,7 @@ sub set {
     else {
 	croak 'Bad arg count' if @_ % 2;
 	my %arg = @_;
-	my $ds = $self->stat
+	$ds = $self->stat
 		or return undef;
 	my($key,$val);
 	$ds->$key($val)
@@ -126,12 +140,12 @@ sub getall {
     my $data = "";
     semctl($$self,0,GETALL,$data)
 	or return ();
-    (unpack("s*",$data));
+    (unpack("s$N*",$data));
 }
 
 sub setall {
     my $self = shift;
-    my $data = pack("s*",@_);
+    my $data = pack("s$N*",@_);
     semctl($$self,0,SETALL,$data);
 }
 
@@ -153,24 +167,26 @@ IPC::Semaphore - SysV Semaphore IPC object class
 
 =head1 SYNOPSIS
 
-    use IPC::SysV qw(IPC_PRIVATE S_IRWXU IPC_CREAT);
+    use IPC::SysV qw(IPC_PRIVATE S_IRUSR S_IWUSR IPC_CREAT);
     use IPC::Semaphore;
-    
-    $sem = new IPC::Semaphore(IPC_PRIVATE, 10, S_IRWXU | IPC_CREAT);
-    
+
+    $sem = new IPC::Semaphore(IPC_PRIVATE, 10, S_IRUSR | S_IWUSR | IPC_CREAT);
+
     $sem->setall( (0) x 10);
-    
+
     @sem = $sem->getall;
-    
+
     $ncnt = $sem->getncnt;
-    
+
     $zcnt = $sem->getzcnt;
-    
+
     $ds = $sem->stat;
-    
+
     $sem->remove;
 
 =head1 DESCRIPTION
+
+A class providing an object based interface to SysV IPC semaphores.
 
 =head1 METHODS
 
@@ -195,7 +211,9 @@ associated with it, and C<I<FLAGS> & IPC_CREAT> is true.
 =back
 
 On creation of a new semaphore set C<FLAGS> is used to set the
-permissions.
+permissions.  Be careful not to set any flags that the Sys V
+IPC implementation does not allow: in some systems setting
+execute bits makes the operations fail.
 
 =item getall
 
@@ -203,8 +221,8 @@ Returns the values of the semaphore set as an array.
 
 =item getncnt ( SEM )
 
-Returns the number of processed waiting for the semaphore C<SEM> to
-become greater than it's current value
+Returns the number of processes waiting for the semaphore C<SEM> to
+become greater than its current value
 
 =item getpid ( SEM )
 
@@ -217,7 +235,7 @@ Returns the current value of the semaphore C<SEM>.
 
 =item getzcnt ( SEM )
 
-Returns the number of processed waiting for the semaphore C<SEM> to
+Returns the number of processes waiting for the semaphore C<SEM> to
 become zero.
 
 =item id
@@ -249,7 +267,7 @@ with the semaphore set.
 
     uid
     gid
-    mode (oly the permission bits)
+    mode (only the permission bits)
 
 C<set> accepts either a stat object, as returned by the C<stat> method,
 or a list of I<name>-I<value> pairs.
@@ -267,7 +285,7 @@ Set the C<N>th value in the semaphore set to C<VALUE>
 
 Returns an object of type C<IPC::Semaphore::stat> which is a sub-class of
 C<Class::Struct>. It provides the following fields. For a description
-of these fields see you system documentation.
+of these fields see your system documentation.
 
     uid
     gid
@@ -284,14 +302,18 @@ of these fields see you system documentation.
 
 L<IPC::SysV> L<Class::Struct> L<semget> L<semctl> L<semop> 
 
-=head1 AUTHOR
+=head1 AUTHORS
 
 Graham Barr <gbarr@pobox.com>
+Marcus Holland-Moritz <mhx@cpan.org>
 
 =head1 COPYRIGHT
 
-Copyright (c) 1997 Graham Barr. All rights reserved.
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
+Version 2.x, Copyright (C) 2007, Marcus Holland-Moritz.
+
+Version 1.x, Copyright (c) 1997, Graham Barr.
+
+This program is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself.
 
 =cut
