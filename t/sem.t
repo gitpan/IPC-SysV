@@ -1,8 +1,8 @@
 ################################################################################
 #
-#  $Revision: 9 $
+#  $Revision: 10 $
 #  $Author: mhx $
-#  $Date: 2007/10/13 05:14:11 +0200 $
+#  $Date: 2007/10/13 11:08:49 +0200 $
 #
 ################################################################################
 #
@@ -35,8 +35,6 @@ elsif ($Config{'d_msg'} ne 'define') {
   plan(skip_all => '$Config{d_msg} undefined');
 }
 
-plan(tests => 11);
-
 use IPC::SysV qw(
 	SETALL
 	IPC_PRIVATE
@@ -62,6 +60,8 @@ unless (defined $sem) {
     die $info;
   }
 }
+
+plan(tests => 11);
 
 pass('acquired a semaphore');
 
