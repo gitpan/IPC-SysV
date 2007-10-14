@@ -1,5 +1,5 @@
 void
-constant(sv)
+_constant(sv)
     PREINIT:
 #ifdef dXSTARG
 	dXSTARG; /* Faster if we have it.  */
