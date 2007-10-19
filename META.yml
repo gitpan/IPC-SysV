@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:                IPC-SysV
-version:             1.99_05
+version:             1.99_06
 abstract:            System V IPC constants and system calls
 license:             perl
 generated_by:        ExtUtils::MakeMaker version 6.36_01
