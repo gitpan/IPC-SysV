@@ -1,8 +1,8 @@
 ################################################################################
 #
-#  $Revision: 12 $
+#  $Revision: 14 $
 #  $Author: mhx $
-#  $Date: 2007/10/13 05:13:17 +0200 $
+#  $Date: 2007/10/22 13:14:21 +0200 $
 #
 ################################################################################
 #
@@ -21,6 +21,12 @@ use ExtUtils::MakeMaker;
 
 unless ($ENV{'PERL_CORE'}) {
   $ENV{'PERL_CORE'} = 1 if grep { $_ eq 'PERL_CORE=1' } @ARGV;
+}
+
+if ($^O eq 'MSWin32') {
+  my $msg = "The IPC::SysV module cannot be built on the $^O platform.";
+  my $str = '*' x length $msg;
+  die "\n$str\n$msg\n$str\n\n";
 }
 
 WriteMakefile(
