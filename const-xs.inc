@@ -15,9 +15,9 @@ _constant(sv)
 	SV *		sv;
         const char *	s = SvPV(sv, len);
     PPCODE:
-        /* Change this to constant(aTHX_ s, len, &iv, &nv);
+        /* Change this to _constant(aTHX_ s, len, &iv, &nv);
            if you need to return both NVs and IVs */
-	type = constant(aTHX_ s, len, &iv);
+	type = _constant(aTHX_ s, len, &iv);
       /* Return 1 or 2 items. First is error message, or undef if no error.
            Second, if present, is found value */
         switch (type) {

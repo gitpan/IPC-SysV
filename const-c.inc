@@ -21,7 +21,7 @@ typedef double NV; /* 5.6 and later define NVTYPE, and typedef NV to it.  */
 #endif
 
 static int
-constant_5 (pTHX_ const char *name, IV *iv_return) {
+_constant_5 (pTHX_ const char *name, IV *iv_return) {
   /* When generated this function returned values for the list of names given
      here.  However, subsequent manual editing may have added or removed some.
      IPC_M IPC_R IPC_W MSG_R MSG_W SEM_A SEM_R SHM_A SHM_R SHM_W */
@@ -130,7 +130,7 @@ constant_5 (pTHX_ const char *name, IV *iv_return) {
 }
 
 static int
-constant_6 (pTHX_ const char *name, IV *iv_return) {
+_constant_6 (pTHX_ const char *name, IV *iv_return) {
   /* When generated this function returned values for the list of names given
      here.  However, subsequent manual editing may have added or removed some.
      ENOSPC ENOSYS GETALL GETPID GETVAL SETALL SETVAL SHMLBA */
@@ -225,7 +225,7 @@ constant_6 (pTHX_ const char *name, IV *iv_return) {
 }
 
 static int
-constant_7 (pTHX_ const char *name, IV *iv_return) {
+_constant_7 (pTHX_ const char *name, IV *iv_return) {
   /* When generated this function returned values for the list of names given
      here.  However, subsequent manual editing may have added or removed some.
      GETNCNT GETZCNT IPC_SET SEM_ERR SHM_MAP SHM_RND S_IRGRP S_IROTH S_IRUSR
@@ -417,7 +417,7 @@ constant_7 (pTHX_ const char *name, IV *iv_return) {
 }
 
 static int
-constant_8 (pTHX_ const char *name, IV *iv_return) {
+_constant_8 (pTHX_ const char *name, IV *iv_return) {
   /* When generated this function returned values for the list of names given
      here.  However, subsequent manual editing may have added or removed some.
      IPC_EXCL IPC_INFO IPC_RMID IPC_STAT MSG_INFO MSG_STAT MSG_WAIT SEM_DEST
@@ -621,7 +621,7 @@ constant_8 (pTHX_ const char *name, IV *iv_return) {
 }
 
 static int
-constant_9 (pTHX_ const char *name, IV *iv_return) {
+_constant_9 (pTHX_ const char *name, IV *iv_return) {
   /* When generated this function returned values for the list of names given
      here.  However, subsequent manual editing may have added or removed some.
      IPC_ALLOC IPC_CREAT MSG_FWAIT MSG_MWAIT MSG_QWAIT MSG_RWAIT MSG_WWAIT
@@ -748,7 +748,7 @@ constant_9 (pTHX_ const char *name, IV *iv_return) {
 }
 
 static int
-constant_10 (pTHX_ const char *name, IV *iv_return) {
+_constant_10 (pTHX_ const char *name, IV *iv_return) {
   /* When generated this function returned values for the list of names given
      here.  However, subsequent manual editing may have added or removed some.
      IPC_GETACL IPC_LOCKED IPC_NOWAIT IPC_SETACL IPC_WANTED MSG_EXCEPT
@@ -916,7 +916,7 @@ constant_10 (pTHX_ const char *name, IV *iv_return) {
 }
 
 static int
-constant_11 (pTHX_ const char *name, IV *iv_return) {
+_constant_11 (pTHX_ const char *name, IV *iv_return) {
   /* When generated this function returned values for the list of names given
      here.  However, subsequent manual editing may have added or removed some.
      IPC_NOERROR IPC_PRIVATE MSG_NOERROR SHM_HUGETLB SHM_REMOVED */
@@ -980,7 +980,7 @@ constant_11 (pTHX_ const char *name, IV *iv_return) {
 }
 
 static int
-constant (pTHX_ const char *name, STRLEN len, IV *iv_return) {
+_constant (pTHX_ const char *name, STRLEN len, IV *iv_return) {
   /* Initially switch on the length of the name.  */
   /* When generated this function returned values for the list of names given
      in this section of perl code.  Rather than manually editing these functions
@@ -1012,7 +1012,7 @@ my @names = (qw(ENOSPC ENOSYS GETALL GETNCNT GETPID GETVAL GETZCNT IPC_ALLOC
 	       S_IWUSR S_IXGRP S_IXOTH S_IXUSR));
 
 print constant_types(), "\n"; # macro defs
-foreach (C_constant ("IPC::SysV", 'constant', 'IV', $types, undef, 3, @names) ) {
+foreach (C_constant ("IPC::SysV", '_constant', 'IV', $types, undef, 3, @names) ) {
     print $_, "\n"; # C constant subs
 }
 print "\n#### XS Section:\n";
@@ -1022,25 +1022,25 @@ __END__
 
   switch (len) {
   case 5:
-    return constant_5 (aTHX_ name, iv_return);
+    return _constant_5 (aTHX_ name, iv_return);
     break;
   case 6:
-    return constant_6 (aTHX_ name, iv_return);
+    return _constant_6 (aTHX_ name, iv_return);
     break;
   case 7:
-    return constant_7 (aTHX_ name, iv_return);
+    return _constant_7 (aTHX_ name, iv_return);
     break;
   case 8:
-    return constant_8 (aTHX_ name, iv_return);
+    return _constant_8 (aTHX_ name, iv_return);
     break;
   case 9:
-    return constant_9 (aTHX_ name, iv_return);
+    return _constant_9 (aTHX_ name, iv_return);
     break;
   case 10:
-    return constant_10 (aTHX_ name, iv_return);
+    return _constant_10 (aTHX_ name, iv_return);
     break;
   case 11:
-    return constant_11 (aTHX_ name, iv_return);
+    return _constant_11 (aTHX_ name, iv_return);
     break;
   case 12:
     if (memEQ(name, "IPC_SETLABEL", 12)) {
