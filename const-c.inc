@@ -133,54 +133,12 @@ static int
 _constant_6 (pTHX_ const char *name, IV *iv_return) {
   /* When generated this function returned values for the list of names given
      here.  However, subsequent manual editing may have added or removed some.
-     ENOSPC ENOSYS GETALL GETPID GETVAL SETALL SETVAL SHMLBA */
-  /* Offset 4 gives the best switch position.  */
-  switch (name[4]) {
+     EACCES ENOMEM ENOSPC ENOSYS GETALL GETPID GETVAL SETALL SETVAL SHMLBA */
+  /* Offset 3 gives the best switch position.  */
+  switch (name[3]) {
   case 'A':
-    if (memEQ(name, "GETVAL", 6)) {
-    /*                   ^       */
-#ifdef GETVAL
-      *iv_return = GETVAL;
-      return PERL_constant_ISIV;
-#else
-      return PERL_constant_NOTDEF;
-#endif
-    }
-    if (memEQ(name, "SETVAL", 6)) {
-    /*                   ^       */
-#ifdef SETVAL
-      *iv_return = SETVAL;
-      return PERL_constant_ISIV;
-#else
-      return PERL_constant_NOTDEF;
-#endif
-    }
-    break;
-  case 'B':
-    if (memEQ(name, "SHMLBA", 6)) {
-    /*                   ^       */
-#ifdef SHMLBA
-      *iv_return = SHMLBA;
-      return PERL_constant_ISIV;
-#else
-      return PERL_constant_NOTDEF;
-#endif
-    }
-    break;
-  case 'I':
-    if (memEQ(name, "GETPID", 6)) {
-    /*                   ^       */
-#ifdef GETPID
-      *iv_return = GETPID;
-      return PERL_constant_ISIV;
-#else
-      return PERL_constant_NOTDEF;
-#endif
-    }
-    break;
-  case 'L':
     if (memEQ(name, "GETALL", 6)) {
-    /*                   ^       */
+    /*                  ^        */
 #ifdef GETALL
       *iv_return = GETALL;
       return PERL_constant_ISIV;
@@ -189,7 +147,7 @@ _constant_6 (pTHX_ const char *name, IV *iv_return) {
 #endif
     }
     if (memEQ(name, "SETALL", 6)) {
-    /*                   ^       */
+    /*                  ^        */
 #ifdef SETALL
       *iv_return = SETALL;
       return PERL_constant_ISIV;
@@ -198,9 +156,53 @@ _constant_6 (pTHX_ const char *name, IV *iv_return) {
 #endif
     }
     break;
+  case 'C':
+    if (memEQ(name, "EACCES", 6)) {
+    /*                  ^        */
+#ifdef EACCES
+      *iv_return = EACCES;
+      return PERL_constant_ISIV;
+#else
+      return PERL_constant_NOTDEF;
+#endif
+    }
+    break;
+  case 'L':
+    if (memEQ(name, "SHMLBA", 6)) {
+    /*                  ^        */
+#ifdef SHMLBA
+      *iv_return = SHMLBA;
+      return PERL_constant_ISIV;
+#else
+      return PERL_constant_NOTDEF;
+#endif
+    }
+    break;
+  case 'M':
+    if (memEQ(name, "ENOMEM", 6)) {
+    /*                  ^        */
+#ifdef ENOMEM
+      *iv_return = ENOMEM;
+      return PERL_constant_ISIV;
+#else
+      return PERL_constant_NOTDEF;
+#endif
+    }
+    break;
   case 'P':
+    if (memEQ(name, "GETPID", 6)) {
+    /*                  ^        */
+#ifdef GETPID
+      *iv_return = GETPID;
+      return PERL_constant_ISIV;
+#else
+      return PERL_constant_NOTDEF;
+#endif
+    }
+    break;
+  case 'S':
     if (memEQ(name, "ENOSPC", 6)) {
-    /*                   ^       */
+    /*                  ^        */
 #ifdef ENOSPC
       *iv_return = ENOSPC;
       return PERL_constant_ISIV;
@@ -208,12 +210,30 @@ _constant_6 (pTHX_ const char *name, IV *iv_return) {
       return PERL_constant_NOTDEF;
 #endif
     }
-    break;
-  case 'Y':
     if (memEQ(name, "ENOSYS", 6)) {
-    /*                   ^       */
+    /*                  ^        */
 #ifdef ENOSYS
       *iv_return = ENOSYS;
+      return PERL_constant_ISIV;
+#else
+      return PERL_constant_NOTDEF;
+#endif
+    }
+    break;
+  case 'V':
+    if (memEQ(name, "GETVAL", 6)) {
+    /*                  ^        */
+#ifdef GETVAL
+      *iv_return = GETVAL;
+      return PERL_constant_ISIV;
+#else
+      return PERL_constant_NOTDEF;
+#endif
+    }
+    if (memEQ(name, "SETVAL", 6)) {
+    /*                  ^        */
+#ifdef SETVAL
+      *iv_return = SETVAL;
       return PERL_constant_ISIV;
 #else
       return PERL_constant_NOTDEF;
@@ -996,20 +1016,20 @@ _constant (pTHX_ const char *name, STRLEN len, IV *iv_return) {
 use ExtUtils::Constant qw (constant_types C_constant XS_constant);
 
 my $types = {map {($_, 1)} qw(IV)};
-my @names = (qw(ENOSPC ENOSYS GETALL GETNCNT GETPID GETVAL GETZCNT IPC_ALLOC
-	       IPC_CREAT IPC_EXCL IPC_GETACL IPC_INFO IPC_LOCKED IPC_M
-	       IPC_NOERROR IPC_NOWAIT IPC_PRIVATE IPC_R IPC_RMID IPC_SET
-	       IPC_SETACL IPC_SETLABEL IPC_STAT IPC_W IPC_WANTED MSG_EXCEPT
-	       MSG_FWAIT MSG_INFO MSG_LOCKED MSG_MWAIT MSG_NOERROR MSG_QWAIT
-	       MSG_R MSG_RWAIT MSG_STAT MSG_W MSG_WAIT MSG_WWAIT SEM_A
-	       SEM_ALLOC SEM_DEST SEM_ERR SEM_INFO SEM_ORDER SEM_R SEM_STAT
-	       SEM_UNDO SETALL SETVAL SHMLBA SHM_A SHM_CLEAR SHM_COPY
-	       SHM_DCACHE SHM_DEST SHM_ECACHE SHM_FMAP SHM_HUGETLB SHM_ICACHE
-	       SHM_INFO SHM_INIT SHM_LOCK SHM_LOCKED SHM_MAP SHM_NORESERVE
-	       SHM_NOSWAP SHM_R SHM_RDONLY SHM_REMAP SHM_REMOVED SHM_RND
-	       SHM_SHARE_MMU SHM_SHATTR SHM_SIZE SHM_STAT SHM_UNLOCK SHM_W
-	       S_IRGRP S_IROTH S_IRUSR S_IRWXG S_IRWXO S_IRWXU S_IWGRP S_IWOTH
-	       S_IWUSR S_IXGRP S_IXOTH S_IXUSR));
+my @names = (qw(EACCES ENOMEM ENOSPC ENOSYS GETALL GETNCNT GETPID GETVAL
+	       GETZCNT IPC_ALLOC IPC_CREAT IPC_EXCL IPC_GETACL IPC_INFO
+	       IPC_LOCKED IPC_M IPC_NOERROR IPC_NOWAIT IPC_PRIVATE IPC_R
+	       IPC_RMID IPC_SET IPC_SETACL IPC_SETLABEL IPC_STAT IPC_W
+	       IPC_WANTED MSG_EXCEPT MSG_FWAIT MSG_INFO MSG_LOCKED MSG_MWAIT
+	       MSG_NOERROR MSG_QWAIT MSG_R MSG_RWAIT MSG_STAT MSG_W MSG_WAIT
+	       MSG_WWAIT SEM_A SEM_ALLOC SEM_DEST SEM_ERR SEM_INFO SEM_ORDER
+	       SEM_R SEM_STAT SEM_UNDO SETALL SETVAL SHMLBA SHM_A SHM_CLEAR
+	       SHM_COPY SHM_DCACHE SHM_DEST SHM_ECACHE SHM_FMAP SHM_HUGETLB
+	       SHM_ICACHE SHM_INFO SHM_INIT SHM_LOCK SHM_LOCKED SHM_MAP
+	       SHM_NORESERVE SHM_NOSWAP SHM_R SHM_RDONLY SHM_REMAP SHM_REMOVED
+	       SHM_RND SHM_SHARE_MMU SHM_SHATTR SHM_SIZE SHM_STAT SHM_UNLOCK
+	       SHM_W S_IRGRP S_IROTH S_IRUSR S_IRWXG S_IRWXO S_IRWXU S_IWGRP
+	       S_IWOTH S_IWUSR S_IXGRP S_IXOTH S_IXUSR));
 
 print constant_types(), "\n"; # macro defs
 foreach (C_constant ("IPC::SysV", '_constant', 'IV', $types, undef, 3, @names) ) {
